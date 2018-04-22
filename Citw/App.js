@@ -15,6 +15,7 @@ import {
   Alert
 } from 'react-native';
 import { getBatteryLevel } from 'react-native-fs';
+import RNFS from 'react-native-fs';
 
 // Render the contents of RNFS.DocumentDirectoryPath on the screen
 
@@ -27,6 +28,7 @@ const instructions = Platform.select({
 
 type Props = {};
 export default class App extends Component<Props> {
+
   constructor(props) {
     super(props);
     this.state = {
@@ -45,6 +47,7 @@ export default class App extends Component<Props> {
         RNFS.writeFile(path, fileContent, 'utf8')
           .then((success) => {
             console.warn('FILE WRITTEN!');
+
           })
           .catch((err) => {
             console.warn(err.message);
@@ -52,29 +55,21 @@ export default class App extends Component<Props> {
       });
   }
 
+  readFile = (path) => {
+    RNFS.readFile(path)
+      .then(
+
+      )
+  }
+
   checkFile = () => {
-    var RNFS = require('react-native-fs');
-
-    RNFS.readDir(RNFS.DocumentDirectoryPath)
-      .then((result) => {
-        // debugger;
-        console.warn('GOT RESULT', result);
-
-        // stat the first file
-        return Promise.all([RNFS.stat(result[0].path), result[0].path]);
-      })
-      .then((statResult) => {
-        // debugger;
-        if (statResult[0].isFile()) {
-          // if we have a file, read it
-          console.warn(statResult[1]);
-          if (!statResult[1].endsWith('/r.txt')) {
-            this.getFile();
-          } else {
-            console.warn('FILE EXISTS.');
-          }
-        }
-      });
+    var path = RNFS.DocumentDirectoryPath + '/r.txt';
+    if (!RNFS.exists(RNFS.DocumentDirectoryPath)) {
+      this.getFile();
+    } else {
+      console.warn('FILE EXISTS.');
+      this.readFile(path);
+    }
   }
 
   async componentDidMount() {
