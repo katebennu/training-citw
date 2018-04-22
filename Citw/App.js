@@ -57,9 +57,10 @@ export default class App extends Component<Props> {
 
   readFile = (path) => {
     RNFS.readFile(path)
-      .then(
-
-      )
+      .then(content => {
+        // console.warn(content.split('\n'));
+        this.setState({ addresses: content.split('\n') })
+      })
   }
 
   checkFile = () => {
@@ -72,7 +73,7 @@ export default class App extends Component<Props> {
     }
   }
 
-  async componentDidMount() {
+  async componentWillMount() {
     this.checkFile();
   }
   onPress = () => {
@@ -83,7 +84,9 @@ export default class App extends Component<Props> {
       <View style={styles.container} >
         <Text style={styles.welcome}>
           Files:
-
+          {this.state.addresses.map(address => {
+            <Text>{address}</Text>
+          })}
         </Text>
         <Button title="Press" onPress={this.onPress} />
       </View>
