@@ -29,29 +29,13 @@ type Props = {};
 export default class App extends Component<Props> {
   constructor(props) {
     super(props);
-    this.state = { addresses: [] }
+    this.state = {
+      addresses: [],
+      fileLoaded: false
+    };
   }
-  async componentDidMount() {
-    var RNFS = require('react-native-fs');
 
-    RNFS.readDir(RNFS.DocumentDirectoryPath) 
-          .then((result) => {
-            debugger;
-            console.warn('GOT RESULT', result);
-
-            // stat the first file
-            return Promise.all([RNFS.stat(result[0].path), result[0].path]);
-          })
-          .then((statResult) => {
-            // debugger;
-            if (statResult[0].isFile()) {
-              // if we have a file, read it
-              console.warn(statResult[1]);
-            }
-
-          });
-
-
+  getFile = () => {
     fetch('https://staltz.com/g.txt')
       .then(response => response.text())
       .then(fileContent => {
@@ -65,23 +49,48 @@ export default class App extends Component<Props> {
           .catch((err) => {
             console.warn(err.message);
           });
-
-        // get a list of files and directories in the main bundle
-        
-
       });
-    }
-  onPress = () => {
-          AsyncStorage.setItem('myname', 'K');
+  }
+
+  checkFile = () => {
+    var RNFS = require('react-native-fs');
+
+    RNFS.readDir(RNFS.DocumentDirectoryPath)
+      .then((result) => {
+        // debugger;
+        console.warn('GOT RESULT', result);
+
+        // stat the first file
+        return Promise.all([RNFS.stat(result[0].path), result[0].path]);
+      })
+      .then((statResult) => {
+        // debugger;
+        if (statResult[0].isFile()) {
+          // if we have a file, read it
+          console.warn(statResult[1]);
+          if (!statResult[1].endsWith('/r.txt')) {
+            this.getFile();
+          } else {
+            console.warn('FILE EXISTS.');
+          }
         }
+      });
+  }
+
+  async componentDidMount() {
+    this.checkFile();
+  }
+  onPress = () => {
+    AsyncStorage.setItem('myname', 'K');
+  }
   render() {
-          return(
-      <View style = { styles.container } >
-              <Text style={styles.welcome}>
-                Files:
-      
+    return (
+      <View style={styles.container} >
+        <Text style={styles.welcome}>
+          Files:
+
         </Text>
-              <Button title="Press" onPress={this.onPress} />
+        <Button title="Press" onPress={this.onPress} />
       </View>
     );
   }
