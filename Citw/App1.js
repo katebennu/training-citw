@@ -93,8 +93,8 @@ export default class App extends Component<Props> {
         <Text style={styles.welcome}>
           Files:        </Text>
         <FlatList data={this.state.addresses}
-          renderItem={({ address }) =>
-            <Text>* {address.name}</Text>
+          renderItem={({ item }) =>
+            <Text>* {item.name}</Text>
           }>
         </FlatList>
       </View >

@@ -35,15 +35,13 @@ class HomeScreen extends Component {
           // renderItem={({ item }) => <UserView item={item} />}
           renderItem={({ item }) =>
             <View style={styles.userCard}>
-              <Text style={{ fontSize: 15 }}>{item.name}</ Text>
-              <Text>{item.email}</Text>
               <Button
                 onPress={() => this.onX(this.state.users, item)}
                 title="X" />
               }
               <Button
-                title="Go to Details"
-                onPress={() => this.props.navigation.navigate('Details')}
+                title={item.name}
+                onPress={() => this.props.navigation.navigate('Details', { user: item })}
               />
             </View>
           }
@@ -53,15 +51,18 @@ class HomeScreen extends Component {
   }
 }
 
-class DetailsScreen extends React.Component {
+class DetailsScreen extends Component {
   static navigationOptions = {
     title: 'Details',
   };
 
   render() {
+    const { params } = this.props.navigation.state;
+    console.warn(params);
     return (
-      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-        <Text>Details Screen</Text>
+      <View style={{ flex: 1, padding: 15 }}>
+        <Text>{params.user.name}</Text>
+        <Text>{params.user.email}</Text>
       </View>
     );
   }
@@ -70,12 +71,11 @@ class DetailsScreen extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // paddingTop: Constants.statusBarHeight,
     backgroundColor: 'white',
   },
   userCard: {
     flexDirection: 'row',
-    margin: 25
+    margin: 10
   }
 });
 
