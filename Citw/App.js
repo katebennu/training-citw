@@ -1,71 +1,72 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- * @flow
- */
-
 import React, { Component } from 'react';
-import {
-  Platform,
-  StyleSheet,
-  Text,
-  View,
-  AsyncStorage,
-  Button,
-  Alert,
-  FlatList
-} from 'react-native';
-import { getBatteryLevel } from 'react-native-fs';
-import RNFS from 'react-native-fs';
+import { FlatList, View, StyleSheet, Text, Button } from 'react-native';
+// import { Constants } from 'expo';
 
-// Render the contents of RNFS.DocumentDirectoryPath on the screen
+// class UserView extends Component {
+//   render() {
+//     return (
+//       <View style={styles.userCard}>
+//         <Text style={{fontSize: 15}}>{this.props.item.name}</ Text>
+//         <Text>{this.props.item.email}</Text>
+//         <Button 
+//           onPress={onX}
+//           title="X" />
+//       }
+//       </View>
+//     );
+//   }
+// }
 
-const instructions = Platform.select({
-  ios: 'Press Cmd+R to reload,\n' +
-    'Cmd+D or shake for dev menu',
-  android: 'Double tap R on your keyboard to reload,\n' +
-    'Shake or press menu button for dev menu',
-});
-
-type Props = {};
-export default class App extends Component<Props> {
-
+export default class App extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = { users: [] };
   }
 
-
-
-  async componentDidMount() {
-
+  componentDidMount() {
+    fetch('https://jsonplaceholder.typicode.com/users')
+      .then(res => res.json())
+      .then(users => {
+        this.setState({ users });
+      });
   }
+
+  onX(users, deletedUser) {
+    this.setState(() => ({
+      users: users.filter(user => user.name !== deletedUser.name)
+    }));
+  }
+
   render() {
     return (
-      <View style={styles.container} >
-        <Text style={styles.welcome}>Navigation</Text>
-      </View >
+      <View style={styles.container}>
+        <FlatList
+          data={this.state.users}
+          // renderItem={({ item }) => <UserView item={item} />}
+          renderItem={({ item }) =>
+            <View style={styles.userCard}>
+              <Text style={{ fontSize: 15 }}>{item.name}</ Text>
+              <Text>{item.email}</Text>
+              <Button
+                onPress={() => this.onX(this.state.users, item)}
+                title="X" />
+              }
+            </View>
+          }
+        />
+      </View>
     );
   }
 }
 
-
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'stretch',
-    backgroundColor: '#F5FCFF',
+    // paddingTop: Constants.statusBarHeight,
+    backgroundColor: 'white',
   },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
-  },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
-  },
+  userCard: {
+    flexDirection: 'row',
+    margin: 25
+  }
 });
