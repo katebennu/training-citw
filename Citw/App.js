@@ -32,57 +32,10 @@ export default class App extends Component<Props> {
 
   constructor(props) {
     super(props);
-    this.state = {
-      addresses: ['la'],
-      fileLoaded: false
-    };
+    this.state = {};
   }
 
-  getFile = () => {
-    fetch('https://staltz.com/g.txt')
-      .then(response => response.text())
-      .then(fileContent => {
-        // console.warn(fileContent);
-        var path = RNFS.DocumentDirectoryPath + '/r.txt';
-        // write the file
-        RNFS.writeFile(path, fileContent, 'utf8')
-          .then((success) => {
-            console.warn('FILE WRITTEN!');
 
-          })
-          .catch((err) => {
-            console.warn(err.message);
-          });
-      });
-  }
-
-  readFile = (path) => {
-    RNFS.readFile(path)
-      .then(content => {
-        // console.warn(content.split('\n'));
-        var items = content.split('\n').map(line => {
-          return { name: line.split(' ')[1] }
-        });
-        this.setState({
-          addresses: items
-        })
-        console.warn(this.state.addresses)
-      })
-  }
-
-  checkFile = () => {
-    var path = RNFS.DocumentDirectoryPath + '/r.txt';
-    if (!RNFS.exists(RNFS.DocumentDirectoryPath)) {
-      this.getFile();
-    } else {
-      console.warn('FILE EXISTS.');
-      this.readFile(path);
-    }
-  }
-
-  async componentWillMount() {
-    this.checkFile();
-  }
 
   async componentDidMount() {
 
@@ -90,13 +43,7 @@ export default class App extends Component<Props> {
   render() {
     return (
       <View style={styles.container} >
-        <Text style={styles.welcome}>
-          Files:        </Text>
-        <FlatList data={this.state.addresses}
-          renderItem={({ address }) =>
-            <Text>* {address.name}</Text>
-          }>
-        </FlatList>
+        <Text style={styles.welcome}>Navigation</Text>
       </View >
     );
   }
