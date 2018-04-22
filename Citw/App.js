@@ -12,7 +12,8 @@ import {
   View,
   AsyncStorage,
   Button,
-  Alert
+  Alert,
+  FlatList
 } from 'react-native';
 import { getBatteryLevel } from 'react-native-fs';
 import RNFS from 'react-native-fs';
@@ -32,7 +33,7 @@ export default class App extends Component<Props> {
   constructor(props) {
     super(props);
     this.state = {
-      addresses: [],
+      addresses: ['la'],
       fileLoaded: false
     };
   }
@@ -59,7 +60,13 @@ export default class App extends Component<Props> {
     RNFS.readFile(path)
       .then(content => {
         // console.warn(content.split('\n'));
-        this.setState({ addresses: content.split('\n') })
+        var items = content.split('\n').map(line => {
+          return { name: line.split(' ')[1] }
+        });
+        this.setState({
+          addresses: items
+        })
+        console.warn(this.state.addresses)
       })
   }
 
@@ -76,20 +83,21 @@ export default class App extends Component<Props> {
   async componentWillMount() {
     this.checkFile();
   }
-  onPress = () => {
-    AsyncStorage.setItem('myname', 'K');
+
+  async componentDidMount() {
+
   }
   render() {
     return (
       <View style={styles.container} >
         <Text style={styles.welcome}>
-          Files:
-          {this.state.addresses.map(address => {
-            <Text>{address}</Text>
-          })}
-        </Text>
-        <Button title="Press" onPress={this.onPress} />
-      </View>
+          Files:        </Text>
+        <FlatList data={this.state.addresses}
+          renderItem={({ address }) =>
+            <Text>* {address.name}</Text>
+          }>
+        </FlatList>
+      </View >
     );
   }
 }
@@ -100,7 +108,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-    alignItems: 'center',
+    alignItems: 'stretch',
     backgroundColor: '#F5FCFF',
   },
   welcome: {
