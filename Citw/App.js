@@ -1,23 +1,13 @@
 import React, { Component } from 'react';
 import { FlatList, View, StyleSheet, Text, Button } from 'react-native';
-// import { Constants } from 'expo';
+import { StackNavigator } from 'react-navigation';
 
-// class UserView extends Component {
-//   render() {
-//     return (
-//       <View style={styles.userCard}>
-//         <Text style={{fontSize: 15}}>{this.props.item.name}</ Text>
-//         <Text>{this.props.item.email}</Text>
-//         <Button 
-//           onPress={onX}
-//           title="X" />
-//       }
-//       </View>
-//     );
-//   }
-// }
 
-export default class App extends Component {
+class HomeScreen extends Component {
+  static navigationOptions = {
+    title: 'Home',
+  };
+
   constructor(props) {
     super(props);
     this.state = { users: [] };
@@ -51,9 +41,27 @@ export default class App extends Component {
                 onPress={() => this.onX(this.state.users, item)}
                 title="X" />
               }
+              <Button
+                title="Go to Details"
+                onPress={() => this.props.navigation.navigate('Details')}
+              />
             </View>
           }
         />
+      </View>
+    );
+  }
+}
+
+class DetailsScreen extends React.Component {
+  static navigationOptions = {
+    title: 'Details',
+  };
+
+  render() {
+    return (
+      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+        <Text>Details Screen</Text>
       </View>
     );
   }
@@ -70,3 +78,17 @@ const styles = StyleSheet.create({
     margin: 25
   }
 });
+
+export default StackNavigator(
+  {
+    Home: {
+      screen: HomeScreen,
+    },
+    Details: {
+      screen: DetailsScreen,
+    },
+  },
+  {
+    initialRouteName: 'Home',
+  },
+);
